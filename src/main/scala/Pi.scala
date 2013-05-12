@@ -5,19 +5,22 @@ import main.scala.messages._
 import main.scala.actors._
 
 object Pi extends App {
-  
-  calculate(nrOfWorkers = 4, nrOfElements = 10000, nrOfMessages = 10000)
 
-  def calculate(nrOfWorkers: Int, nrOfElements: Int, nrOfMessages: Int) {
+  val numOfWorkers = 100
+  val numOfCalculations = 1000000
+  val elementsPerCalculation = 1000
+
+  calculate(numOfWorkers, numOfCalculations, elementsPerCalculation)
+
+  def calculate(numOfWorkers: Int, numOfCalculations: Int, elementsPerCalculation: Int) {
     
     val system = ActorSystem("PiSystem")
     val listener = system.actorOf(Props[Listener], name = "listener")
 
-    val master = system.actorOf(Props(new Master(
-      
-      nrOfWorkers, nrOfMessages, nrOfElements, listener)),
+    val master = system.actorOf(
+      Props(new Master(numOfWorkers, numOfCalculations, elementsPerCalculation, listener)),
       name = "master")
 
-    master ! Calculate
+    master ! BeginCalculation
   }
 }

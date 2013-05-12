@@ -3,7 +3,7 @@ package main.scala.messages
 import scala.concurrent.duration._
 
 sealed trait PiMessage
-case object Calculate extends PiMessage
-case class Work(start: Int, nrOfElements: Int) extends PiMessage
-case class Result(value: Double) extends PiMessage
-case class PiApproximation(pi: Double, duration: Duration)
+case class PiApproximation(pi: Double, duration: Duration) extends PiMessage
+case class BeginCalculation extends PiMessage
+case class Calculate(start: Int, numOfElements: Int) extends PiMessage
+case class CalculationResult(value: Double) extends PiMessage
