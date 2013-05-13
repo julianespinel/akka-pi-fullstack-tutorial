@@ -6,11 +6,9 @@ import main.scala.actors._
 
 object Pi extends App {
 
-  val numOfWorkers = 100
-  val numOfCalculations = 1000000
+  val numOfWorkers = 1000
+  val numOfCalculations = 10000000
   val elementsPerCalculation = 1000
-
-  calculate(numOfWorkers, numOfCalculations, elementsPerCalculation)
 
   def calculate(numOfWorkers: Int, numOfCalculations: Int, elementsPerCalculation: Int) {
     
@@ -23,4 +21,6 @@ object Pi extends App {
 
     master ! BeginCalculation
   }
+  
+  calculate(numOfWorkers, numOfCalculations, elementsPerCalculation)
 }

@@ -13,6 +13,19 @@ class Master(numOfWorkers: Int, numOfCalculations: Int, elementsPerCalculation: 
 
   val workerRouter = context.actorOf(
     Props[Worker].withRouter(RoundRobinRouter(numOfWorkers)), name = "workerRouter")
+  
+  def getNumberOfDecimalPlaces(doubleNumber: Double): Int = {
+
+    val numberCharList = doubleNumber.toString.toList
+
+    def countDecimalPlaces(numberCharList: List[Char]): Int = numberCharList match  {
+
+      case '.' :: tail => tail.length
+      case _ => countDecimalPlaces(numberCharList.tail)
+    }
+
+    countDecimalPlaces(numberCharList)
+  }
 
   def receive = {
 
@@ -24,7 +37,8 @@ class Master(numOfWorkers: Int, numOfCalculations: Int, elementsPerCalculation: 
         pi += value
         numOfResults += 1
         if (numOfResults == numOfCalculations) {
-          listener ! PiApproximation(pi, duration = (System.currentTimeMillis - initialTime).millis)
+          listener ! PiApproximation(pi, duration = (System.currentTimeMillis - initialTime).millis, 
+            getNumberOfDecimalPlaces(pi))
           context.stop(self)
         }
   }

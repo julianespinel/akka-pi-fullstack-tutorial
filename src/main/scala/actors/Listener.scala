@@ -8,8 +8,8 @@ class Listener extends Actor {
 
   def receive = {
 
-    case PiApproximation(pi, duration) =>
-      println("Pi approximation:\t%s\nCalculation time:\t%s\n".format(pi, duration))
+    case PiApproximation(pi, duration, decimalDigits) =>
+      println("Pi approximation:\t%s\nCalculation time:\t%s\nDecimal digits:\t\t%s\n".format(pi, duration, decimalDigits))
       context.system.shutdown()
   }
 }
