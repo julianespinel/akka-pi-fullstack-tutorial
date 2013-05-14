@@ -4,6 +4,9 @@ import akka.actor._
 import main.scala.messages._
 import main.scala.actors._
 
+/*
+ * The object that represents the application's entrance point.
+ */
 object Pi extends App {
 
   val numOfWorkers = 1000
