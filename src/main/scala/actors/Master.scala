@@ -2,6 +2,7 @@ package main.scala.actors
 
 import akka.actor._
 import akka.routing.RoundRobinRouter
+import main.scala.math.MathFunctions
 import main.scala.messages._
 import scala.concurrent.duration._
 
@@ -23,22 +24,6 @@ class Master(numOfWorkers: Int, numOfCalculations: Int, elementsPerCalculation: 
   val workerRouter = context.actorOf(
     Props[Worker].withRouter(RoundRobinRouter(numOfWorkers)), name = "workerRouter")
   
-  /*
-   * Given a Double object, returns its decimal places.
-   */
-  def getNumberOfDecimalPlaces(doubleNumber: Double): Int = {
-
-    val numberCharList = doubleNumber.toString.toList
-
-    def countDecimalPlaces(numberCharList: List[Char]): Int = numberCharList match  {
-
-      case '.' :: tail => tail.length
-      case _ => countDecimalPlaces(numberCharList.tail)
-    }
-
-    countDecimalPlaces(numberCharList)
-  }
-
   def receive = {
 
     case BeginCalculation =>
@@ -49,8 +34,8 @@ class Master(numOfWorkers: Int, numOfCalculations: Int, elementsPerCalculation: 
         pi += value
         numOfResults += 1
         if (numOfResults == numOfCalculations) {
-          listener ! DisplayMessage(pi, duration = (System.currentTimeMillis - initialTime).millis, 
-            getNumberOfDecimalPlaces(pi))
+          listener ! DisplayMessage(pi, duration = (System.currentTimeMillis - initialTime).millis,
+            MathFunctions.getNumberOfDecimalPlaces(pi))
           context.stop(self)
         }
   }
