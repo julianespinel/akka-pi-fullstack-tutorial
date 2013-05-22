@@ -9,9 +9,9 @@ import main.scala.actors._
  */
 object Pi extends App {
 
-  val numOfWorkers = 1000
-  val numOfCalculations = 10000000
-  val elementsPerCalculation = 1000
+  val numOfWorkers = 10
+  val numOfCalculations = 1000
+  val elementsPerCalculation = 120
 
   def calculate(numOfWorkers: Int, numOfCalculations: Int, elementsPerCalculation: Int) {
     

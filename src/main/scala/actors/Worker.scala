@@ -11,7 +11,7 @@ class Worker extends Actor {
 
   def receive = {
 
-    case Calculate(start, elementsPerCalculation) =>
-      sender ! CalculationResult(MathFunctions.calculatePiFunctionalFor(start, elementsPerCalculation, 0, 0.0))
+    case Calculate(start, steps) =>
+      sender ! CalculationResult(MathFunctions.calculatePiFunctional(start, steps))
   }
 }
