@@ -31,3 +31,10 @@ case class CalculationResult(value: Double) extends PiMessage
  * The message that contains the information to display in console.
  */
 case class DisplayMessage(pi: Double, duration: Duration, decimalDigits: Int) extends PiMessage
+
+/*
+ * Message to calculate Pi using only one thread.
+ * The elements param represents the number of steps int the summation.
+ * In this case, the summation should begin at 0.
+ */
+case class CalculateNotParalell(elements: Int) extends PiMessage

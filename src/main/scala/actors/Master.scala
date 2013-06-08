@@ -1,42 +1,48 @@
 package main.scala.actors
 
 import akka.actor._
-import akka.routing.RoundRobinRouter
-import main.scala.math.MathFunctions
+import akka.pattern.ask
+import akka.util.Timeout
+import main.scala.actors._
 import main.scala.messages._
+import scala.concurrent.Await
 import scala.concurrent.duration._
+import scala.concurrent.Future
+import spray.routing._
 
 /*
- * This actor is the main actor of the application. 
- *
- * It is responsible for:
- * 1. Begin the calculation.
- * 2. Create the workerRouter that will handle the workers.
- * 3. Receive and sum the result of each calculation.
- * 4. Send the final message to the listener in order to display the resutls.
+ * Actor responsible for define the paths of the services.
  */
-class Master(numOfWorkers: Int, numOfCalculations: Int, elementsPerCalculation: Int, listener: ActorRef) extends Actor {
+class Master extends Actor with HttpServiceActor {
 
-  var pi: Double = _
-  var numOfResults: Int = _
-  val initialTime: Long = System.currentTimeMillis
+  def receive = runRoute {
 
-  val workerRouter = context.actorOf(
-    Props[Worker].withRouter(RoundRobinRouter(numOfWorkers)), name = "workerRouter")
-  
-  def receive = {
+    path("pi") {
+      
+      get {
+        // URL GET parameters
+        parameters("workers".as[Int], "calculations".as[Int], 
+          "elements".as[Int]) { (workers, calculations, elements) =>
 
-    case BeginCalculation =>
-      for (i <- 0 until numOfCalculations)
-        workerRouter ! Calculate(i * elementsPerCalculation, elementsPerCalculation)
+          // val calculactor = context.actorOf(Calculactor.props(workers, calculations, elements))
+          val calculactorProps = Props(new Calculactor(workers, calculations, elements))
+          val calculactor = context.actorOf(calculactorProps)
+          calculactor ! BeginCalculation
 
-      case CalculationResult(value) =>
-        pi += value
-        numOfResults += 1
-        if (numOfResults == numOfCalculations) {
-          listener ! DisplayMessage(pi, duration = (System.currentTimeMillis - initialTime).millis,
-            MathFunctions.getNumberOfDecimalPlaces(pi))
-          context.stop(self)
+          complete("Hello from master actor")
+        } ~
+        parameters("elements".as[Int]) { (elements) =>
+
+          val calculactorProps = Props(new Calculactor(1, 1, 1))
+          val calculactor = context.actorOf(calculactorProps)
+
+          implicit val timeout = Timeout(5 seconds)
+          val future = calculactor ? CalculateNotParalell(elements)
+          val result = Await.result(future, timeout.duration).asInstanceOf[Double]
+
+          complete("sync Pi: " + result)
         }
+      }
+    }
   }
 }
