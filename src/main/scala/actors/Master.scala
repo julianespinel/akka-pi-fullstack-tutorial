@@ -29,7 +29,7 @@ class Master extends Actor with HttpServiceActor {
           val calculactor = context.actorOf(calculactorProps)
           calculactor ! BeginCalculation
 
-          complete("Hello from master actor")
+          complete("202")
         } ~
         parameters("elements".as[Int]) { (elements) =>
 

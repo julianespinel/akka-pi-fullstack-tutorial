@@ -16,5 +16,6 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % "2.1.4",
   "org.scalacheck" %% "scalacheck" % "1.10.1" % "test",
   "io.spray" % "spray-can" % "1.1-M7",
-  "io.spray" % "spray-routing" % "1.1-M7"
+  "io.spray" % "spray-routing" % "1.1-M7",
+  "org.mongodb" %% "casbah" % "2.6.1"
 )

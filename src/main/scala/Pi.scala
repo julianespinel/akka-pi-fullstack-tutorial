@@ -11,6 +11,7 @@ import spray.can.server.SprayCanHttpServerApp
 object Pi extends App with SprayCanHttpServerApp {
 
   val actorSystem = ActorSystem("piSystem")
+  actorSystem.actorOf(Props[Writer], "writer") // creates the single writter of the app.
   val master = actorSystem.actorOf(Props[Master], "master")
 
   newHttpServer(master) ! Bind(interface = "localhost", port = 8080)
